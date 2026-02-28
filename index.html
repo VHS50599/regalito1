@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Un Jardín Para Ti 🤍</title>
+
+<style>
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to top, #e9ddff, #cbb7f7);
+    text-align: center;
+    color: #4b2e83;
+}
+
+/* Header */
+.header {
+    position: relative;
+    z-index: 10;
+    padding-top: 25px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+p {
+    margin-top: 8px;
+}
+
+/* Flowers */
+.flower {
+    position: absolute;
+    font-size: 45px;
+    cursor: pointer;
+    animation: floatAnimation var(--duration) ease-in-out var(--delay) infinite alternate;
+    transition: transform 0.3s;
+}
+
+.flower:hover {
+    transform: scale(1.3);
+}
+
+@keyframes floatAnimation {
+    from { transform: translateY(0px); }
+    to { transform: translateY(var(--float-distance)); }
+}
+
+/* Popup */
+.message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    display: none;
+    max-width: 320px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.2);
+    color: #4b2e83;
+    z-index: 20;
+}
+
+.message button {
+    margin-top: 15px;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 10px;
+    background-color: #cbb7f7;
+    color: #4b2e83;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* White floating hearts */
+.heart {
+    position: absolute;
+    color: white;
+    animation: floatUp linear infinite;
+    opacity: 0.8;
+}
+
+@keyframes floatUp {
+    from {
+        transform: translateY(100vh);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-10vh);
+        opacity: 0;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Un Jardín Solo Para Ti 🤍</h1>
+    <p>Toca las flores...</p>
+</div>
+
+<div class="message" id="popup">
+    <div id="text"></div>
+    <button onclick="closeMessage()">Cerrar</button>
+</div>
+
+<script>
+const flowersData = [
+    {emoji:"🌷", message:"Desde que llegaste, aprendí que es amar 🌷"},
+    {emoji:"🌸", message:"Tu risa es mi sonido favorito 💕"},
+    {emoji:"🌼", message:"Eres la luz más bonita de mis días ✨"},
+    {emoji:"🌷", message:"Cada momento contigo es perfecto 🤍"},
+    {emoji:"🌸", message:"Tu abrazo es mi lugar seguro 🫶"},
+    {emoji:"🌼", message:"Contigo todo se siente más dulce 🌼"},
+    {emoji:"🌷", message:"Eres mi casualidad favorita 🤍"},
+    {emoji:"🌸", message:"No cambiaría nada si estás tú 🌸"},
+    {emoji:"🌼", message:"Mi corazón te eligió sin dudarlo 🤍"},
+    {emoji:"🌷", message:"Eres la mujer más especial de mi mundo 🌷"},
+    {emoji:"🌸", message:"Tu amor hace que todo sea más bonito 🌸"},
+    {emoji:"🌼", message:"Eres mi pensamiento favorito cada día 🤍"}
+];
+
+const placedPositions = [];
+const minDistance = 70; // minimum space between flowers
+
+function isFarEnough(x, y) {
+    for (let pos of placedPositions) {
+        const dx = pos.x - x;
+        const dy = pos.y - y;
+        if (Math.sqrt(dx * dx + dy * dy) < minDistance) {
+            return false;
+        }
+    }
+    return true;
+}
+
+flowersData.forEach((flowerData) => {
+    const flower = document.createElement("div");
+    flower.classList.add("flower");
+    flower.innerHTML = flowerData.emoji;
+
+    let x, y;
+    let attempts = 0;
+
+    do {
+        x = Math.random() * (window.innerWidth - 60);
+        y = (window.innerHeight * 0.25) + 
+            Math.random() * (window.innerHeight * 0.65 - 60);
+        attempts++;
+    } while (!isFarEnough(x, y) && attempts < 100);
+
+    placedPositions.push({x, y});
+
+    flower.style.left = x + "px";
+    flower.style.top = y + "px";
+
+    flower.style.setProperty("--float-distance", (-10 - Math.random() * 20) + "px");
+    flower.style.setProperty("--duration", (3 + Math.random() * 4) + "s");
+    flower.style.setProperty("--delay", (Math.random() * 3) + "s");
+
+    flower.addEventListener("click", () => {
+        document.getElementById("text").innerText = flowerData.message;
+        document.getElementById("popup").style.display = "block";
+    });
+
+    document.body.appendChild(flower);
+});
+
+function closeMessage() {
+    document.getElementById("popup").style.display = "none";
+}
+
+/* Floating white hearts */
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "🤍";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (Math.random() * 20 + 10) + "px";
+    heart.style.animationDuration = (5 + Math.random() * 5) + "s";
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 10000);
+}
+
+setInterval(createHeart, 800);
+</script>
+
+</body>
+</html>
